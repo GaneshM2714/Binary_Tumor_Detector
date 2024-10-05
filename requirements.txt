@@ -1,5 +1,5 @@
 streamlit
 tensorflow
-numpy
-imutils
 opencv-python
+Pillow
+imutils
