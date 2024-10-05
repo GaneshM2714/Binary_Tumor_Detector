@@ -1,6 +1,7 @@
 streamlit
 tensorflow
-opencv-python
+opencv-python-headless
 Pillow
 imutils
 numpy
+libgl1-mesa-glx
