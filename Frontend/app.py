@@ -5,9 +5,13 @@ import cv2
 from PIL import Image
 import  imutils
 import numpy as np
+import os
 
 # Load the model
-model = load_model('..\TumorDetector.keras')
+script_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(script_dir, '..', 'TumorDetector.keras')
+model = load_model(model_path)
+
 
 def crop_brain_contour(image):
     print(f"Image type: {type(image)}, Image shape: {image.shape if isinstance(image, np.ndarray) else 'N/A'}")
