@@ -7,7 +7,7 @@ import  imutils
 import numpy as np
 
 # Load the model
-model = load_model('../Model/TumorDetector.keras')
+model = load_model('..\TumorDetector.keras')
 
 def crop_brain_contour(image):
     print(f"Image type: {type(image)}, Image shape: {image.shape if isinstance(image, np.ndarray) else 'N/A'}")
