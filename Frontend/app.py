@@ -1,11 +1,15 @@
+from cProfile import label
+
 import streamlit as st
 import numpy as np
+import tensorflow as tf
 from tensorflow.keras.models import load_model
 import cv2
-from PIL import Image
 import  imutils
 import numpy as np
 import os
+
+from tensorflow.python.ops.special_math_ops import lbeta
 
 # Load the model
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -103,9 +107,35 @@ def read_image(uploaded_file):
 
     return image
 
+def train_model(c_model, c_label,c_image):
+  """Trains the model on new data.
+
+  Args:
+      model: The TensorFlow model to train.
+      new_data: A tuple containing the input features (X_train)
+                and target labels (y_train) for the new data.
+
+  Returns:
+      The trained model.
+  """
+  # Preprocess the image
+  np_img = preprocess_image(c_image)
+
+  label_array = np.array([c_label])  # Shape should be (1,)
+
+  c_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+  # Train the model on the new image and label
+  history = c_model.fit(np_img, label_array, epochs=1, batch_size=1, verbose=2)
+
+  # Save the trained model
+  model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'TumorDetector.keras')
+  c_model.save(model_path)
+
+  return model
 
 def main():
-    st.title("Image Prediction App")
+    st.title("Tumor Prediction App")
 
     # Upload image
     uploaded_image = st.file_uploader("Upload an image")
@@ -113,6 +143,7 @@ def main():
     if uploaded_image is not None:
         # Read the image using the custom function
         image = read_image(uploaded_image)
+        n_image = image
 
         # Display the uploaded image
         st.image(image, channels="BGR")
@@ -122,6 +153,21 @@ def main():
 
         # Display the result
         st.write("Prediction:", result)
+        st.image(n_image)
+        st.write("FEEDBACK: ")
+        no_trigger = st.checkbox("Was the Output Not Correct?")
+        ans = True
+        if no_trigger:
+            st.write("No!")
+            ans = False
+        else:
+            st.write("Yes!")
+
+        if not ans:
+            label = 0
+            if result== "No":
+                label = 1
+            train_model(model, label,n_image)
 
 
 if __name__ == "__main__":
