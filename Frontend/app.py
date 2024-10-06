@@ -153,7 +153,7 @@ def main():
 
         # Display the result
         st.write("Prediction:", result)
-        st.image(n_image)
+        # st.image(n_image)
         st.write("FEEDBACK: ")
         no_trigger = st.checkbox("Was the Output Not Correct?")
         ans = True
